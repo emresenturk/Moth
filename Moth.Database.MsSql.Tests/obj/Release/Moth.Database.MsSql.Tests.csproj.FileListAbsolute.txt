@@ -1,0 +1,13 @@
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Database.MsSql.Tests\bin\Release\Moth.Database.MsSql.Tests.dll.config
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Database.MsSql.Tests\bin\Release\Moth.Database.MsSql.Tests.dll
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Database.MsSql.Tests\bin\Release\Moth.Database.MsSql.Tests.pdb
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Database.MsSql.Tests\bin\Release\Handy.Statistics.dll
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Database.MsSql.Tests\bin\Release\Moth.Database.MsSql.dll
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Database.MsSql.Tests\bin\Release\Moth.dll
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Database.MsSql.Tests\bin\Release\nunit.framework.dll
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Database.MsSql.Tests\bin\Release\Moth.Database.MsSql.pdb
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Database.MsSql.Tests\bin\Release\Moth.pdb
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Database.MsSql.Tests\bin\Release\Handy.Statistics.pdb
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Database.MsSql.Tests\obj\Release\Moth.Database.MsSql.Tests.csprojResolveAssemblyReference.cache
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Database.MsSql.Tests\obj\Release\Moth.Database.MsSql.Tests.dll
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Database.MsSql.Tests\obj\Release\Moth.Database.MsSql.Tests.pdb

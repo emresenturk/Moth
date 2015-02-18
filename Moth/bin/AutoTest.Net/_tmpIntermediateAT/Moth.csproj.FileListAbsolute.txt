@@ -1,0 +1,5 @@
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth\bin\AutoTest.Net\_tmpIntermediateAT\Moth.csprojResolveAssemblyReference.cache
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth\bin\AutoTest.Net\_tmpIntermediateAT\Moth.dll
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth\bin\AutoTest.Net\_tmpIntermediateAT\Moth.pdb
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth\bin\AutoTest.Net\Moth.dll
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth\bin\AutoTest.Net\Moth.pdb

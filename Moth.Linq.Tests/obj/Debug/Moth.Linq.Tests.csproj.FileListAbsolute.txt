@@ -1,0 +1,14 @@
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq.Tests\bin\Debug\Moth.Linq.Tests.dll
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq.Tests\bin\Debug\Moth.Linq.Tests.pdb
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq.Tests\bin\Debug\Moth.Linq.dll
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq.Tests\bin\Debug\Moth.dll
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq.Tests\bin\Debug\Moth.Linq.pdb
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq.Tests\bin\Debug\Moth.pdb
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq.Tests\obj\Debug\Moth.Linq.Tests.csprojResolveAssemblyReference.cache
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq.Tests\obj\Debug\Moth.Linq.Tests.dll
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq.Tests\obj\Debug\Moth.Linq.Tests.pdb
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq.Tests\bin\Debug\nunit.framework.dll
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq.Tests\bin\Debug\Moth.Database.MsSql.dll
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq.Tests\bin\Debug\Moth.Database.MsSql.pdb
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq.Tests\bin\Debug\Moth.Linq.Tests.dll.config
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq.Tests\bin\Debug\nunit.framework.xml
