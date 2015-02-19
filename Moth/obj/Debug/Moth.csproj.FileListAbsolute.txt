@@ -2,3 +2,4 @@ C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth\bin\Debug\Moth.dll
 C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth\bin\Debug\Moth.pdb
 C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth\obj\Debug\Moth.dll
 C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth\obj\Debug\Moth.pdb
+C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth\obj\Debug\Moth.csprojResolveAssemblyReference.cache

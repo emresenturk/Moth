@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 using Moth.Data;
 
@@ -13,9 +13,13 @@ namespace Moth.Linq.Mapper
                 typeof (T).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty);
             var entityProperties = new Property[properties.Length];
             var index = 0;
-            foreach (var propertyInfo in properties)
+            foreach (var property in properties)
             {
-                entityProperties[index] = new Property(propertyInfo.Name, propertyInfo.GetValue(obj));
+                var isOne = property.PropertyType.IsGenericType &&
+                            property.PropertyType.GetGenericTypeDefinition() == typeof (One<>);
+                var propVal = isOne ? property.PropertyType.GetProperty("UId").GetValue(property.GetValue(obj)) : property.GetValue(obj);
+                entityProperties[index] = new Property(property.Name, propVal);    
+                
                 index++;
             }
 
@@ -32,9 +36,19 @@ namespace Moth.Linq.Mapper
         {
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty);
             var instance = Activator.CreateInstance(type);
-            foreach (var propertyInfo in properties)
+            foreach (var property in properties)
             {
-                propertyInfo.SetValue(instance, entity[propertyInfo.Name]);
+                if (property.PropertyType.IsGenericType &&
+                    property.PropertyType.GetGenericTypeDefinition() == typeof (One<>))
+                {
+                    var oneInstance = Activator.CreateInstance(property.PropertyType);
+                    TypeDescriptor.GetProperties(oneInstance)["UId"].SetValue(oneInstance,entity[property.Name]);
+                    property.SetValue(instance, oneInstance);
+                }
+                else
+                {
+                    property.SetValue(instance, entity[property.Name]);
+                }
             }
 
             return instance;

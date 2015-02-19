@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using NUnit.Framework;
 
@@ -14,6 +15,20 @@ namespace Moth.Linq.Tests
             employee.Create();
             Assert.AreNotEqual(employee.UId, Guid.Empty);
             Assert.AreNotEqual(employee.Id, 0);
+        }
+
+        [Test]
+        public void CreateOneWithRelation()
+        {
+            var employee = new Employee {FirstName = "Random", LastName = "Employee"};
+            var department = new Department {Name = "Research & Development"};
+            department.Create();
+            employee.Department = department;
+            employee.Create();
+            var employeeRetrieved = Employee.Records.First(emp => emp.UId == employee.UId);
+            Trace.WriteLine(employeeRetrieved.Department.UId);
+            Department employeeDepartment = employeeRetrieved.Department;
+            Trace.WriteLine(employeeDepartment.Name);
         }
 
         [Test]

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 using Moth.Data;
 
@@ -48,7 +49,17 @@ namespace Moth.Linq.Mapper
                 var instance = Activator.CreateInstance(type);
                 foreach (var property in properties)
                 {
-                    property.SetValue(instance, entity[property.Name]);
+                    if (property.PropertyType.IsGenericType &&
+                    property.PropertyType.GetGenericTypeDefinition() == typeof(One<>))
+                    {
+                        var oneInstance = Activator.CreateInstance(property.PropertyType);
+                        TypeDescriptor.GetProperties(oneInstance)["UId"].SetValue(oneInstance, entity[property.Name]);
+                        property.SetValue(instance, oneInstance);
+                    }
+                    else
+                    {
+                        property.SetValue(instance, entity[property.Name]);
+                    }
                 }
                 return instance;
             };
@@ -62,7 +73,10 @@ namespace Moth.Linq.Mapper
                 var entityProperties = new Dictionary<string, object>();
                 foreach (var property in properties)
                 {
-                    entityProperties[property.Name] = property.GetValue(obj);
+                    var isOne = property.PropertyType.IsGenericType &&
+                            property.PropertyType.GetGenericTypeDefinition() == typeof(One<>);
+                    var propVal = isOne ? property.PropertyType.GetProperty("UId").GetValue(property.GetValue(obj)) : property.GetValue(obj);
+                    entityProperties[property.Name] = new Property(property.Name, propVal);   
                 }
 
                 return new Entity(entityProperties);

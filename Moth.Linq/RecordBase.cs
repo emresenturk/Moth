@@ -3,7 +3,7 @@ using System.Data.Common;
 
 namespace Moth.Linq
 {
-    public abstract class RecordBase
+    public abstract class RecordBase : IModel
     {
         public Guid UId { get; internal set; }
 

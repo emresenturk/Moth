@@ -4,39 +4,59 @@ using Moth.Expressions;
 
 namespace Moth.Linq
 {
-    public class One<T> where T : class 
+    public class One<T> where T : class , IModel
     {
-        private Guid uId;
+        public Guid UId { get; set; }
 
-        public T Value
+        public One()
         {
-            get { return GetValue(); }
         }
 
-        private T GetValue()
+        public One(Guid uId)
+        {
+            this.UId = uId;
+        }
+
+        public T Entity
+        {
+            get { return GetEntity(); }
+        }
+
+        private T GetEntity()
         {
             using (var executor = new ExpressionExecutor())
             {
                 var query = new ExpressionQuery();
+                query.AddType(typeof(T));
                 query.AddFilter(new BinaryExpression(new MemberExpression("UId", typeof (Guid), typeof (T)),
-                    BinaryOperator.Equal, new ParameterExpression(new Parameter(uId))));
+                    BinaryOperator.Equal, new ParameterExpression(new Parameter(UId))));
                 return executor.ExecuteRetrieve<T>(query).FirstOrDefault();
             }
         }
 
         public static implicit operator One<T>(Guid uId)
         {
-            return new One<T> {uId = uId};
+            return new One<T> {UId = uId};
         }
 
-        public static implicit operator Guid(One<T> one)
+        //public static implicit operator Guid(One<T> one)
+        //{
+        //    return one.uId;
+        //}
+
+        public static explicit operator Guid(One<T> one)
         {
-            return one.uId;
+            return one.UId;
         }
 
         public static implicit operator T(One<T> one)
         {
-            return one.Value;
+            return one.Entity;
+        }
+
+        public static implicit operator One<T>(T entity)
+        {
+            return new One<T> {UId = entity.UId};
         }
     }
 }

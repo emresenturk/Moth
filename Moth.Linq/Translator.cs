@@ -62,11 +62,6 @@ namespace Moth.Linq
             throw new NotImplementedException(string.Format("Expression Type: {0}, Expression: {1}", expression.NodeType, expression));
         }
 
-        //private static MothExpressions.IQueryExpression TranslateParameterExpression(SystemExpressions.ParameterExpression parameterExpression)
-        //{
-        //    throw new NotSupportedException("wtf?");
-        //}
-
         private static MemberExpression TranslateMemberAccessExpression(SystemExpressions.MemberExpression memberExpression)
         {
             if (!memberExpression.Member.MemberType.HasFlag(MemberTypes.Property))

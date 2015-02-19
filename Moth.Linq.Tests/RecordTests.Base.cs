@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using Moth.Configuration;
@@ -11,31 +9,6 @@ using NUnit.Framework;
 
 namespace Moth.Linq.Tests
 {
-    public class Employee : RecordBase<Employee>
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-
-        protected override void OnCreated(Employee employee)
-        {
-            Trace.WriteLine(string.Format("My Id is :{0}", employee.Id));
-            Trace.WriteLine(string.Format("My UniqueId is :{0}", employee.UId));
-            Trace.WriteLine(string.Format("I am created on {0}", employee.DateCreated));
-        }
-
-        protected override void OnDeleted(Employee employee)
-        {
-            Trace.WriteLine("I'm deleted");
-        }
-
-        protected override void OnUpdated(Employee employee)
-        {
-            Trace.WriteLine(string.Format("I was created on {0}", employee.DateCreated));
-            Trace.WriteLine(string.Format("I am updated on {0}", employee.DateUpdated.Value));
-            Trace.WriteLine(string.Format("My full name is {0} {1}", employee.FirstName ,employee.LastName));
-        }
-    }
-
     [TestFixture]
     public partial class RecordTests
     {
@@ -90,9 +63,11 @@ namespace Moth.Linq.Tests
         {
             TearDown();
             Query.Create(
-                "CREATE TABLE [Moth.Linq.Tests.Employee] (Id int NOT NULL PRIMARY KEY IDENTITY(1,1), UId uniqueidentifier, DateCreated DateTime NOT NULL, DateUpdated DateTime NULL,FirstName varchar(max), LastName varchar(MAX))")
+                "CREATE TABLE [Moth.Linq.Tests.Employee] (Id int NOT NULL PRIMARY KEY IDENTITY(1,1), UId uniqueidentifier, DateCreated DateTime NOT NULL, DateUpdated DateTime NULL,FirstName varchar(max), LastName varchar(MAX), Department uniqueidentifier)")
                 .Execute()
                 .NonQuery();
+            Query.Create(
+                "CREATE TABLE [Moth.Linq.Tests.Department](Id int NOT NULL PRIMARY KEY IDENTITY(1,1), UId uniqueidentifier, DateCreated DateTime NOT NULL, DateUpdated DateTime NULL, Name varchar(max))").Execute().NonQuery();
         }
     }
 }
