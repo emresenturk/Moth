@@ -1,5 +1,0 @@
-C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth\bin\Release\Moth.dll
-C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth\bin\Release\Moth.pdb
-C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth\obj\Release\Moth.dll
-C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth\obj\Release\Moth.pdb
-C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth\obj\Release\Moth.csprojResolveAssemblyReference.cache

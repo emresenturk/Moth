@@ -1,7 +1,0 @@
-C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq\bin\Debug\Moth.Linq.dll
-C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq\bin\Debug\Moth.Linq.pdb
-C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq\bin\Debug\Moth.dll
-C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq\bin\Debug\Moth.pdb
-C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq\obj\Debug\Moth.Linq.csprojResolveAssemblyReference.cache
-C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq\obj\Debug\Moth.Linq.dll
-C:\Users\mesh\Documents\Visual Studio 2013\Projects\Moth\Moth.Linq\obj\Debug\Moth.Linq.pdb

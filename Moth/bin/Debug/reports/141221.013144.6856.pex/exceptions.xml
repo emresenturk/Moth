@@ -1,7 +1,0 @@
-﻿<frameTree version="1.0.0.0"><frameException type="System.NullReferenceException"><tag exceptionState="unexpected"><generatedTestRef idref="e1513da7-cade-4c4f-9ca1-f9f926a07079"/>
-</tag>
-</frameException>
-<frameException type="System.ArgumentException"><tag exceptionState="expected"><generatedTestRef idref="b119e072-a8bc-4e91-a266-6bed7ab7850a"/>
-</tag>
-</frameException>
-</frameTree>
