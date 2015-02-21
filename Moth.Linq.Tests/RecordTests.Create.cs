@@ -23,8 +23,11 @@ namespace Moth.Linq.Tests
             var employee = new Employee {FirstName = "Random", LastName = "Employee"};
             var department = new Department {Name = "Research & Development"};
             department.Create();
-            employee.Department = department;
             employee.Create();
+            department.Employees.Add(employee);
+            var randomEmployee = department.Employees.First(emp => emp.FirstName == "Random");
+            Assert.NotNull(randomEmployee);
+            Trace.WriteLine(randomEmployee.FirstName + " " + randomEmployee.LastName);
             var employeeRetrieved = Employee.Records.First(emp => emp.UId == employee.UId);
             Trace.WriteLine(employeeRetrieved.Department.UId);
             Department employeeDepartment = employeeRetrieved.Department;

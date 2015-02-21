@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Moth.Linq.Attributes;
 
 namespace Moth.Linq.Tests
 {
@@ -32,5 +33,8 @@ namespace Moth.Linq.Tests
     public class Department : RecordBase<Department>
     {
         public string Name { get; set; }
+
+        [OneToMany("Department")]
+        public Many<Employee> Employees { get; set; }
     }
 }

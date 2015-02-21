@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data.Common;
 
 namespace Moth.Linq
@@ -14,7 +15,7 @@ namespace Moth.Linq
         public DateTime? DateUpdated { get; internal set; }        
     }
 
-    public abstract class RecordBase<T> : RecordBase where T : RecordBase
+    public abstract class RecordBase<T> : RecordBase where T : class, IModel
     {
         public static Records<T> Records
         {
@@ -107,9 +108,16 @@ namespace Moth.Linq
             using (var executor = new ExpressionExecutor())
             {
                 var newRecord = executor.Create(this as T);
-                Id = newRecord.Id;
-                UId = newRecord.UId;
-                DateCreated = newRecord.DateCreated;
+                
+                var properties = TypeDescriptor.GetProperties(newRecord);
+                foreach (PropertyDescriptor property in properties)
+                {
+                    var propertyValue = property.GetValue(newRecord);
+                    if (propertyValue != null)
+                    {
+                        property.SetValue(this, propertyValue);
+                    }
+                }
             }
         }
 
@@ -118,7 +126,15 @@ namespace Moth.Linq
             using (var executor = new ExpressionExecutor())
             {
                 var updatedRecord = executor.Update(this as T);
-                DateUpdated = updatedRecord.DateUpdated;
+                var properties = TypeDescriptor.GetProperties(updatedRecord);
+                foreach (PropertyDescriptor property in properties)
+                {
+                    var propertyValue = property.GetValue(updatedRecord);
+                    if (propertyValue != null)
+                    {
+                        property.SetValue(this, propertyValue);
+                    }
+                }
             }
         }
 

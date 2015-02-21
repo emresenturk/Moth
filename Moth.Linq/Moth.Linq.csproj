@@ -39,7 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\OneToManyAttribute.cs" />
     <Compile Include="ExpressionExecutor.cs" />
+    <Compile Include="Many.cs" />
     <Compile Include="One.cs" />
     <Compile Include="RecordProvider.cs" />
     <Compile Include="IModel.cs" />

@@ -37,26 +37,35 @@ namespace Moth.Linq
             });
         }
 
-        public T Create<T>(T obj) where T : RecordBase
+        public T Create<T>(T obj) where T : class, IModel
         {
             var typeExpression = new TypeExpression(typeof (T));
-            obj.DateCreated = DateTime.UtcNow;
-            obj.UId = Guid.NewGuid();
+            if (obj is RecordBase<T>)
+            {
+                (obj as RecordBase<T>).DateCreated = DateTime.UtcNow;
+                (obj as RecordBase<T>).UId = Guid.NewGuid();
+
+            }
+
             var createdEntity = Database.Create(mapper.CreateEntity(obj), typeExpression);
-            var newRecord = mapper.CreateObject<T>(createdEntity);
-            return newRecord;
+            obj = mapper.CreateObject<T>(createdEntity);
+            return obj;
         }
 
-        public T Update<T>(T obj) where T : RecordBase
+        public T Update<T>(T obj) where T : class, IModel
         {
             var typeExpression = new TypeExpression(typeof(T));
-            obj.DateUpdated = DateTime.UtcNow;
+            if (obj is RecordBase<T>)
+            {
+                (obj as RecordBase<T>).DateUpdated = DateTime.UtcNow;
+            }
+
             var updatedEntity = Database.Update(mapper.CreateEntity(obj), typeExpression);
             var updatedObj = mapper.CreateObject<T>(updatedEntity);
             return updatedObj;
         }
 
-        public T Delete<T>(T obj) where T : RecordBase
+        public T Delete<T>(T obj) where T : class, IModel
         {
             var typeExpression = new TypeExpression(typeof (T));
             var deletedEntity = Database.Delete(mapper.CreateEntity(obj), typeExpression);

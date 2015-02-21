@@ -16,6 +16,8 @@ namespace Moth.Linq
             this.records = records;
         }
 
+        internal event EventHandler<ProviderEventArgs> OnBeforeExecute;
+
         public IQueryable CreateQuery(Expression expression)
         {
             return CreateQuery<TRecord>(expression);
@@ -28,12 +30,16 @@ namespace Moth.Linq
         }
 
         public object Execute(Expression expression)
-        {
+        {            
             return Execute<TRecord>(expression);
         }
 
         public IEnumerable<TRecord> ExecuteEnumerator(Expression expression)
         {
+            if (OnBeforeExecute != null)
+            {
+                OnBeforeExecute(this, new ProviderEventArgs{Expression = expression});
+            }
             var query = visitor.VisitAndTranslate(expression);
             query.AddType(typeof(TRecord));
             using (var executor = new ExpressionExecutor())
@@ -47,6 +53,11 @@ namespace Moth.Linq
 
         public TResult Execute<TResult>(Expression expression)
         {
+            if (OnBeforeExecute != null)
+            {
+                OnBeforeExecute(this, new ProviderEventArgs{Expression = expression});
+            }
+
             var query = visitor.VisitAndTranslate(expression);
             query.AddType(typeof(TResult));
             using (var executor = new ExpressionExecutor())
@@ -66,5 +77,10 @@ namespace Moth.Linq
                 throw new InvalidOperationException("No element satisfies the condition in predicate or source is empty");
             }
         }
+    }
+
+    internal class ProviderEventArgs
+    {
+        public Expression Expression { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using Moth.Expressions;
 
 namespace Moth.Linq
 {
-    public class One<T> where T : class , IModel
+    public class One<T> where T : class, IModel
     {
         public Guid UId { get; set; }
 
@@ -23,7 +23,7 @@ namespace Moth.Linq
         }
 
         private T GetEntity()
-        {
+        {  
             using (var executor = new ExpressionExecutor())
             {
                 var query = new ExpressionQuery();
@@ -39,12 +39,7 @@ namespace Moth.Linq
             return new One<T> {UId = uId};
         }
 
-        //public static implicit operator Guid(One<T> one)
-        //{
-        //    return one.uId;
-        //}
-
-        public static explicit operator Guid(One<T> one)
+        public static implicit operator Guid(One<T> one)
         {
             return one.UId;
         }
@@ -57,6 +52,16 @@ namespace Moth.Linq
         public static implicit operator One<T>(T entity)
         {
             return new One<T> {UId = entity.UId};
+        }
+
+        public static bool operator ==(One<T> one, Guid uId)
+        {
+            return one != null && one.UId == uId;
+        }
+
+        public static bool operator !=(One<T> one, Guid uId)
+        {
+            return !(one == uId);
         }
     }
 }
