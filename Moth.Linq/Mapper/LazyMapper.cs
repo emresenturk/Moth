@@ -84,3 +84,5 @@ namespace Moth.Linq.Mapper
         }
     }
 }
+
+// TODO: copy changes made in ReflectionMapper.cs to here
