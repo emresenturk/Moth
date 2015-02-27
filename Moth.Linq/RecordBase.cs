@@ -108,7 +108,6 @@ namespace Moth.Linq
             using (var executor = new ExpressionExecutor())
             {
                 var newRecord = executor.Create(this as T);
-                
                 var properties = TypeDescriptor.GetProperties(newRecord);
                 foreach (PropertyDescriptor property in properties)
                 {
@@ -118,6 +117,9 @@ namespace Moth.Linq
                         property.SetValue(this, propertyValue);
                     }
                 }
+
+                UId = newRecord.UId;
+                Id = newRecord.Id;
             }
         }
 

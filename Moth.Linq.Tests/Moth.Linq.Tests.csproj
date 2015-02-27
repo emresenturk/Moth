@@ -50,6 +50,7 @@
     <Compile Include="RecordTests.Create.cs" />
     <Compile Include="RecordTests.Delete.cs" />
     <Compile Include="RecordTests.Read.cs" />
+    <Compile Include="RecordTests.Relations.cs" />
     <Compile Include="RecordTests.Update.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -67,18 +67,9 @@ namespace Moth.Linq.Mapper
                     }
                     else if (propertyGenericTypeDefinition == typeof (Many<>))
                     {
-                        var propertyAttribute = property.GetCustomAttribute<OneToManyAttribute>();                        
-                        var manyInstance = Activator.CreateInstance(property.PropertyType);
-                        if (propertyAttribute != null)
-                        {
-                            TypeDescriptor.GetProperties(manyInstance)["RelationName"].SetValue(manyInstance,
-                                propertyAttribute.RelationName);
-                        }
-                        else
-                        {
-                            TypeDescriptor.GetProperties(manyInstance)["RelationName"].SetValue(manyInstance, type.Name);
-                        }
-                        TypeDescriptor.GetProperties(manyInstance)["UId"].SetValue(manyInstance, entity["UId"]);
+                        var propertyAttribute = property.GetCustomAttribute<OneToManyAttribute>();
+                        var relationName = propertyAttribute != null ? propertyAttribute.RelationName : type.Name;
+                        var manyInstance = Activator.CreateInstance(property.PropertyType, relationName, entity["UId"]);
                         property.SetValue(instance, manyInstance);
                     }
                 }

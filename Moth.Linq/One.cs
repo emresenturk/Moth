@@ -14,7 +14,7 @@ namespace Moth.Linq
 
         public One(Guid uId)
         {
-            this.UId = uId;
+            UId = uId;
         }
 
         public T Entity

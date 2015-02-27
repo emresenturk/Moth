@@ -85,7 +85,7 @@ namespace Moth.Linq
                     case "Single":
                     case "SingleOrDefault":
                     case "Where":
-                        query.AddFilter(Translator.TranslateExpression(Visit(node.Arguments[1])));
+                        query.AddFilter(Translator.TranslateExpression(Visit(node.Arguments.Last())));
                         break;
                     case "OrderBy":
                     case "ThenBy":
@@ -99,7 +99,10 @@ namespace Moth.Linq
                         Trace.WriteLine(node.Method.Name);
                         break;
                 }
-                return base.Visit(node.Arguments[0]);
+                if (node.Arguments.Count > 1)
+                {
+                    return base.Visit(node.Arguments[0]);
+                }
             }
 
             var argumentExpressions = node.Arguments.Select(Visit).ToList();

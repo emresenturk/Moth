@@ -48,8 +48,8 @@ namespace Moth.Linq
             }
 
             var createdEntity = Database.Create(mapper.CreateEntity(obj), typeExpression);
-            obj = mapper.CreateObject<T>(createdEntity);
-            return obj;
+            var createdObject = mapper.CreateObject<T>(createdEntity);
+            return createdObject;
         }
 
         public T Update<T>(T obj) where T : class, IModel

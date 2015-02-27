@@ -53,13 +53,14 @@ namespace Moth.Linq
 
         public TResult Execute<TResult>(Expression expression)
         {
+            var eventArgs = new ProviderEventArgs {Expression = expression};
             if (OnBeforeExecute != null)
             {
-                OnBeforeExecute(this, new ProviderEventArgs{Expression = expression});
+                OnBeforeExecute(this, eventArgs);
             }
 
             var query = visitor.VisitAndTranslate(expression);
-            query.AddType(typeof(TResult));
+            query.AddType(typeof(TRecord));
             using (var executor = new ExpressionExecutor())
             {
                 var callExpression = expression as MethodCallExpression;
