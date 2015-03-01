@@ -1,7 +1,6 @@
 using System.Diagnostics;
-using Moth.Linq.Attributes;
 
-namespace Moth.Linq.Tests
+namespace Moth.Linq.Tests.TestClasses
 {
     public class Employee : RecordBase<Employee>
     {
@@ -28,13 +27,5 @@ namespace Moth.Linq.Tests
             Trace.WriteLine(string.Format("I am updated on {0}", employee.DateUpdated.Value));
             Trace.WriteLine(string.Format("My full name is {0} {1}", employee.FirstName ,employee.LastName));
         }
-    }
-
-    public class Department : RecordBase<Department>
-    {
-        public string Name { get; set; }
-
-        [OneToMany("Department")]
-        public Many<Employee> Employees { get; set; }
     }
 }

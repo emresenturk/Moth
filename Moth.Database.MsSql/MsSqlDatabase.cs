@@ -166,7 +166,7 @@ namespace Moth.Database.MsSql
 
         public static string ToSelectQuery(this ExpressionQuery query)
         {
-            var select = string.Format("SELECT {0}", string.Join(", ", query.Maps.Select(e => e.ToSqlStatement()).DefaultIfEmpty("*")));
+            var select = string.Format("SELECT {0}", string.Join(", ", query.Projections.Select(e => e.ToSqlStatement()).DefaultIfEmpty("*")));
             var from = string.Format("FROM {0}", string.Join(", ", query.Types.Select(t => t.Type.ToTableName())));
             var where = query.Filters.Count > 0 ? string.Format("WHERE {0}",
                 string.Join(" AND ", query.Filters.Select(e => string.Format("({0})", e.ToSqlStatement())))) : string.Empty;

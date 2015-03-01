@@ -44,14 +44,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Employee.cs" />
     <Compile Include="RecordTests.Base.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RecordTests.Create.cs" />
-    <Compile Include="RecordTests.Delete.cs" />
-    <Compile Include="RecordTests.Read.cs" />
-    <Compile Include="RecordTests.Relations.cs" />
-    <Compile Include="RecordTests.Update.cs" />
+    <Compile Include="RecordTests.Create.cs">
+      <DependentUpon>RecordTests.Base.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RecordTests.Delete.cs">
+      <DependentUpon>RecordTests.Base.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RecordTests.Read.cs">
+      <DependentUpon>RecordTests.Base.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RecordTests.Relations.cs">
+      <DependentUpon>RecordTests.Base.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RecordTests.Update.cs">
+      <DependentUpon>RecordTests.Base.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TestClasses\Department.cs" />
+    <Compile Include="TestClasses\Employee.cs" />
+    <Compile Include="VisitorTests.cs" />
+    <Compile Include="VisitorTests.MCEHandling.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Moth.Database.MsSql\Moth.Database.MsSql.csproj">

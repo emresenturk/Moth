@@ -49,7 +49,7 @@
     <Compile Include="Expressions\BinaryOperator.cs" />
     <Compile Include="Expressions\ConstantExpression.cs" />
     <Compile Include="Expressions\ExpressionGroup.cs" />
-    <Compile Include="Expressions\Entity.cs" />
+    <Compile Include="Expressions\ExpressionQuery.cs" />
     <Compile Include="Expressions\IQueryExpression.cs" />
     <Compile Include="Expressions\JoinExpression.cs" />
     <Compile Include="Expressions\MemberExpression.cs" />

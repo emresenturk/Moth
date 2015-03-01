@@ -1,4 +1,5 @@
 using System.Threading;
+using Moth.Linq.Tests.TestClasses;
 using NUnit.Framework;
 
 namespace Moth.Linq.Tests

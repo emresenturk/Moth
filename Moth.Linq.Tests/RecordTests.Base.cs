@@ -5,6 +5,7 @@ using Moth.Configuration;
 using Moth.Database;
 using Moth.Database.MsSql;
 using Moth.Extensions;
+using Moth.Linq.Tests.TestClasses;
 using NUnit.Framework;
 
 namespace Moth.Linq.Tests

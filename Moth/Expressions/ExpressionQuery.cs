@@ -9,7 +9,7 @@ namespace Moth.Expressions
         {
             Parameters = new List<Parameter>();
             Filters = new List<IQueryExpression>();
-            Maps = new List<IQueryExpression>();
+            Projections = new List<IQueryExpression>();
             Aggregates = new List<IQueryExpression>();
             Paging = new List<IQueryExpression>();
             Types = new List<TypeExpression>();
@@ -17,7 +17,7 @@ namespace Moth.Expressions
         }
 
         public IList<IQueryExpression> Filters { get; set; }
-        public IList<IQueryExpression> Maps { get; set; }
+        public IList<IQueryExpression> Projections { get; set; }
         public IList<IQueryExpression> Aggregates { get; set; }
         public IList<IQueryExpression> Paging { get; set; }
         public IList<IQueryExpression> Order { get; set; }
@@ -32,9 +32,9 @@ namespace Moth.Expressions
             AddExpression(Filters, expression);
         }
 
-        public void AddMap(IQueryExpression expression)
+        public void AddProjection(IQueryExpression expression)
         {
-            AddExpression(Maps, expression);
+            AddExpression(Projections, expression);
         }
 
         public void AddAggregation(IQueryExpression expression)

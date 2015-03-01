@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Linq;
+using Moth.Linq.Tests.TestClasses;
 using NUnit.Framework;
 
 namespace Moth.Linq.Tests

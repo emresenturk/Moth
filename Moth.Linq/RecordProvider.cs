@@ -41,42 +41,45 @@ namespace Moth.Linq
                 OnBeforeExecute(this, new ProviderEventArgs{Expression = expression});
             }
             var query = visitor.VisitAndTranslate(expression);
-            query.AddType(typeof(TRecord));
-            using (var executor = new ExpressionExecutor())
-            {
-                foreach (var record in executor.ExecuteReader<TRecord>(query))
-                {
-                    yield return record;
-                }
-            }
+            return new List<TRecord>();
+            //query.AddType(typeof(TRecord));
+            //using (var executor = new ExpressionExecutor())
+            //{
+            //    foreach (var record in executor.ExecuteReader<TRecord>(query))
+            //    {
+            //        yield return record;
+            //    }
+            //}
         } 
 
         public TResult Execute<TResult>(Expression expression)
         {
-            var eventArgs = new ProviderEventArgs {Expression = expression};
+            var eventArgs = new ProviderEventArgs { Expression = expression };
             if (OnBeforeExecute != null)
             {
                 OnBeforeExecute(this, eventArgs);
             }
 
             var query = visitor.VisitAndTranslate(expression);
-            query.AddType(typeof(TRecord));
-            using (var executor = new ExpressionExecutor())
-            {
-                var callExpression = expression as MethodCallExpression;
-                if (callExpression == null || !singleMetodNames.Contains(callExpression.Method.Name))
-                {
-                    return executor.ExecuteRetrieve<TResult>(query)[0];
-                }
-                var result = executor.ExecuteRetrieve<TResult>(query);
-                if (result.Count != 0) return result[0];
-                if (callExpression.Method.Name.Contains("OrDefault"))
-                {
-                    return default(TResult);
-                }
+            //query.AddType(typeof(TRecord));
+            //using (var executor = new ExpressionExecutor())
+            //{
+            //    var callExpression = expression as MethodCallExpression;
+            //    if (callExpression == null || !singleMetodNames.Contains(callExpression.Method.Name))
+            //    {
+            //        return executor.ExecuteRetrieve<TResult>(query)[0];
+            //    }
+            //    var result = executor.ExecuteRetrieve<TResult>(query);
+            //    if (result.Count != 0) return result[0];
+            //    if (callExpression.Method.Name.Contains("OrDefault"))
+            //    {
+            //        return default(TResult);
+            //    }
 
-                throw new InvalidOperationException("No element satisfies the condition in predicate or source is empty");
-            }
+            //    throw new InvalidOperationException("No element satisfies the condition in predicate or source is empty");
+            //}
+
+            return default(TResult);
         }
     }
 
