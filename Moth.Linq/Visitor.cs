@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Moth.Expressions;
 using BinaryExpression = System.Linq.Expressions.BinaryExpression;
 using ConstantExpression = System.Linq.Expressions.ConstantExpression;
@@ -46,14 +47,8 @@ namespace Moth.Linq
         {
             "Average",
             "Count",
-            "First",
-            "FirstOrDefault",
-            "Last",
-            "LastOrDefault",
             "Max",
             "Min",
-            "Single",
-            "SingleOrDefault",
             "Sum"
         };
 
@@ -66,6 +61,20 @@ namespace Moth.Linq
             "Select",
             "Sum"
         };
+
+        private static readonly string[] PartitionMethodNames =
+        {
+            "First",
+            "FirstOrDefault",
+            "Last",
+            "LastOrDefault",
+            "Single",
+            "SingleOrDefault",
+            "Skip",
+            "SkipWhile",
+            "Take",
+            "TakeWhile"
+        };
         
         private ExpressionQuery query;
 
@@ -76,33 +85,32 @@ namespace Moth.Linq
             {
                 if (FilterMethodNames.Contains(method.Name) && node.Arguments.Count > 1)
                 {
-                    // Add Filter    
+                    query.AddFilter(Translator.TranslateExpression(Visit(node.Arguments[1])));
                 }
 
-                if (AggregateMethodNames.Contains(method.Name) && node.Arguments.Count < 2)
+                if (AggregateMethodNames.Contains(method.Name))
                 {
-                    // Add aggregate
+                    var expressionToVisit = node.Arguments.Count < 2 
+                        ? node.Arguments[0] 
+                        : node.Arguments[1];
+                    query.AddAggregation(Translator.TranslateExpression(Visit(expressionToVisit)));
                 }
 
                 if (ProjectionMethodNames.Contains(method.Name) && node.Arguments.Count > 1)
                 {
-                    // Convert current query to subquery of new query
-                    // Add projection
+                    var oldQuery = query;
+                    query = new ExpressionQuery {SubQuery = oldQuery};
+                    query.AddProjection(Translator.TranslateExpression(Visit(node.Arguments[1])));
+                }
+
+                if (PartitionMethodNames.Contains(method.Name))
+                {
+                    query.AddPartition(Translator.TranslateExpression(Visit(node.Arguments[1])));
                 }
 
             }
-            Trace.WriteLine(string.Format("Method Name: {0}", node.Method.Name));
-            Trace.WriteLine("Arguments:");
-            Trace.WriteLine("-----------------------------");
-            for (var index = 0; index < node.Arguments.Count; index++)
-            {
-                var expression = node.Arguments[index];
-                Trace.WriteLine(string.Format("{0}\t{1}", index, expression));
-            }
-            Trace.WriteLine("=============================");
-            Trace.WriteLine("");
-            Trace.WriteLine("");
-            return base.VisitMethodCall(node);
+
+            return node.Arguments.Count > 1 ? Visit(node.Arguments[0]) : base.VisitMethodCall(node);
         }
 
         public ExpressionQuery VisitAndTranslate(Expression expression)
@@ -110,6 +118,63 @@ namespace Moth.Linq
             query = new ExpressionQuery();
             Visit(expression);
             return query;
+        }
+
+        public override Expression Visit(Expression node)
+        {
+            if (node != null)
+            {
+                Trace.WriteLine(string.Format("{0}: {1}", node.NodeType, node));
+            }
+            return base.Visit(node);
+        }
+
+        protected override Expression VisitMember(MemberExpression node)
+        {
+            var expression = Visit(node.Expression ?? Expression.Constant(null));
+            var constantExpression = expression as ConstantExpression;
+            if (constantExpression == null)
+            {
+                return base.VisitMember(node);
+            }
+
+            var obj = constantExpression.Value;
+            switch (node.Member.MemberType)
+            {
+                case MemberTypes.Field:
+                    return Expression.Constant(((FieldInfo)node.Member).GetValue(obj));
+                case MemberTypes.Property:
+                    return Expression.Constant(((PropertyInfo)node.Member).GetValue(obj));
+            }
+
+            return base.VisitMember(node);
+        }
+
+        protected override Expression VisitConditional(ConditionalExpression node)
+        {
+            var test = base.Visit(node.Test) as ConstantExpression;
+            if (test == null)
+            {
+                return base.VisitConditional(node);
+            }
+
+            var result = (bool)test.Value;
+            return Visit(result ? node.IfTrue : node.IfFalse); // haha
+        }
+
+        protected override Expression VisitBinary(BinaryExpression node)
+        {
+            var left = base.Visit(node.Left);
+            var right = base.Visit(node.Right);
+            if (left is ConstantExpression && right is ConstantExpression)
+            {
+                var value = Expression.Lambda(node.Update(left, node.Conversion, right))
+                    .Compile()
+                    .DynamicInvoke();
+                return Expression.Constant(value);
+            }
+
+            return base.VisitBinary(node);
         }
 
         protected override Expression VisitConstant(ConstantExpression node)
@@ -126,13 +191,27 @@ namespace Moth.Linq
             return base.VisitConstant(node);
         }
 
-        public override Expression Visit(Expression node)
+        protected override Expression VisitLambda<T>(Expression<T> node)
         {
-            if (node != null)
+            var parameters = VisitAndConvert(node.Parameters, node.Name);
+            var body = VisitAndConvert(node.Body, node.Name);
+            return base.VisitLambda(Expression.Lambda<T>(body ?? node.Body, parameters));
+        }
+
+        protected override Expression VisitUnary(UnaryExpression node)
+        {
+            var operand = Visit(node.Operand);
+            while (operand.NodeType == ExpressionType.Quote)
             {
-                Trace.WriteLine(string.Format("{0}: {1}", node.NodeType, node));
+                operand = base.Visit(((UnaryExpression)operand).Operand);
             }
-            return base.Visit(node);
+
+            if (operand != node.Operand)
+            {
+                return node.Update(operand);
+            }
+
+            return base.VisitUnary(node);
         }
     }
 }
