@@ -49,6 +49,7 @@ namespace Moth.Expressions
 
         public void AddType(Type type)
         {
+            if (Types.TrueForAll(t => t.Type != type))
             Types.Add(new TypeExpression(type));
         }
 

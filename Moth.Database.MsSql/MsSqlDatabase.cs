@@ -134,6 +134,7 @@ namespace Moth.Database.MsSql
 
         private static IEnumerable<Entity> Read(SqlCommand command)
         {
+            Trace.WriteLine(command.CommandText);
             var reader = command.ExecuteReader();
             while (reader.Read())
             {

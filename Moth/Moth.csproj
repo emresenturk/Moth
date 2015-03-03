@@ -53,6 +53,8 @@
     <Compile Include="Expressions\IQueryExpression.cs" />
     <Compile Include="Expressions\JoinExpression.cs" />
     <Compile Include="Expressions\MemberExpression.cs" />
+    <Compile Include="Expressions\MethodExpression.cs" />
+    <Compile Include="Expressions\MethodType.cs" />
     <Compile Include="Expressions\OrderDirection.cs" />
     <Compile Include="Expressions\OrderExpression.cs" />
     <Compile Include="Expressions\ParameterExpression.cs" />

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -67,13 +67,21 @@ namespace Moth.Linq
             "First",
             "FirstOrDefault",
             "Last",
-            "LastOrDefault",
+            "LastOrDefault",            
             "Single",
             "SingleOrDefault",
             "Skip",
             "SkipWhile",
             "Take",
             "TakeWhile"
+        };
+
+        private static readonly string[] OrderMethodNames =
+        {
+            "OrderBy",
+            "OrderByDescending",
+            "ThenBy",
+            "ThenByDescending"
         };
         
         private ExpressionQuery query;
@@ -88,24 +96,40 @@ namespace Moth.Linq
                     query.AddFilter(Translator.TranslateExpression(Visit(node.Arguments[1])));
                 }
 
-                if (AggregateMethodNames.Contains(method.Name))
-                {
-                    var expressionToVisit = node.Arguments.Count < 2 
-                        ? node.Arguments[0] 
-                        : node.Arguments[1];
-                    query.AddAggregation(Translator.TranslateExpression(Visit(expressionToVisit)));
-                }
-
                 if (ProjectionMethodNames.Contains(method.Name) && node.Arguments.Count > 1)
                 {
                     var oldQuery = query;
                     query = new ExpressionQuery {SubQuery = oldQuery};
-                    query.AddProjection(Translator.TranslateExpression(Visit(node.Arguments[1])));
+                }
+
+                if (AggregateMethodNames.Contains(method.Name))
+                {
+                    var expressionToVisit = node.Arguments.Count < 2
+                        ? node.Arguments[0]
+                        : node.Arguments[1];
+                    MethodType methodType;
+                    if (Enum.TryParse(method.Name, out methodType))
+                    {
+                        query.AddAggregation(new MethodExpression(methodType,
+                            Translator.TranslateExpression(Visit(expressionToVisit))));
+                    }
+                    else
+                    {
+                        query.AddAggregation(Translator.TranslateExpression(Visit(expressionToVisit)));    
+                    }
                 }
 
                 if (PartitionMethodNames.Contains(method.Name))
                 {
-                    query.AddPartition(Translator.TranslateExpression(Visit(node.Arguments[1])));
+                    MethodType methodType;
+                    if (Enum.TryParse(method.Name, out methodType))
+                    {
+                        query.AddPartition(new MethodExpression(methodType, Translator.TranslateExpression(Visit(node.Arguments[1]))));
+                    }
+                    else
+                    {
+                        query.AddPartition(Translator.TranslateExpression(Visit(node.Arguments[1])));
+                    }
                 }
 
             }
@@ -122,10 +146,6 @@ namespace Moth.Linq
 
         public override Expression Visit(Expression node)
         {
-            if (node != null)
-            {
-                Trace.WriteLine(string.Format("{0}: {1}", node.NodeType, node));
-            }
             return base.Visit(node);
         }
 
@@ -179,13 +199,13 @@ namespace Moth.Linq
 
         protected override Expression VisitConstant(ConstantExpression node)
         {
-            if (node.Value.GetType().IsGenericType &&
-                node.Value.GetType().GetGenericTypeDefinition() == typeof (Records<>))
+            if (node.Value != null)
             {
-                query.AddType(node.Value.GetType().GenericTypeArguments[0]);
-                Trace.WriteLine("");
-                Trace.WriteLine(string.Format("ConstantExpression: {0}, ValueType:{1}", node, node.Value.GetType()));
-                Trace.WriteLine("");
+                if (node.Value.GetType().IsGenericType &&
+                node.Value.GetType().GetGenericTypeDefinition() == typeof(Records<>))
+                {
+                    query.AddType(node.Value.GetType().GenericTypeArguments[0]);
+                }
             }
             
             return base.VisitConstant(node);
