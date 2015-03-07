@@ -6,9 +6,9 @@
         {
         }
 
-        public OrderDirection Direction { get; set; }
+        public SortDirection Direction { get; set; }
 
-        public static OrderExpression FromMemberExpression(MemberExpression expression, OrderDirection direction)
+        public static OrderExpression FromMemberExpression(MemberExpression expression, SortDirection direction)
         {
             return new OrderExpression
                         {

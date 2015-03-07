@@ -1,6 +1,6 @@
 ﻿namespace Moth.Expressions
 {
-    public enum OrderDirection
+    public enum SortDirection
     {
         Ascending,
         Descending

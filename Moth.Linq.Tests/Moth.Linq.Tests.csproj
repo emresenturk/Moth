@@ -44,27 +44,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RecordTests.Base.cs" />
+    <Compile Include="RecordTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecordTests.Create.cs">
-      <DependentUpon>RecordTests.Base.cs</DependentUpon>
+      <DependentUpon>RecordTests.cs</DependentUpon>
     </Compile>
     <Compile Include="RecordTests.Delete.cs">
-      <DependentUpon>RecordTests.Base.cs</DependentUpon>
+      <DependentUpon>RecordTests.cs</DependentUpon>
     </Compile>
     <Compile Include="RecordTests.Read.cs">
-      <DependentUpon>RecordTests.Base.cs</DependentUpon>
+      <DependentUpon>RecordTests.cs</DependentUpon>
     </Compile>
     <Compile Include="RecordTests.Relations.cs">
-      <DependentUpon>RecordTests.Base.cs</DependentUpon>
+      <DependentUpon>RecordTests.cs</DependentUpon>
     </Compile>
     <Compile Include="RecordTests.Update.cs">
-      <DependentUpon>RecordTests.Base.cs</DependentUpon>
+      <DependentUpon>RecordTests.cs</DependentUpon>
     </Compile>
     <Compile Include="TestClasses\Department.cs" />
     <Compile Include="TestClasses\Employee.cs" />
     <Compile Include="VisitorTests.cs" />
-    <Compile Include="VisitorTests.MCEHandling.cs" />
+    <Compile Include="VisitorTests.MCEHandling.cs">
+      <DependentUpon>VisitorTests.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Moth.Database.MsSql\Moth.Database.MsSql.csproj">

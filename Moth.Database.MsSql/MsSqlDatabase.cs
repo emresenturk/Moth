@@ -167,14 +167,27 @@ namespace Moth.Database.MsSql
 
         public static string ToSelectQuery(this ExpressionQuery query)
         {
+            var @from = query.SubQuery != null 
+                ? string.Format("FROM ({0}) AS F{1}", ((ExpressionQuery)query.SubQuery).ToSelectQuery(), query.QueryIndex) 
+                : string.Format("FROM {0}", string.Join(", ", query.Types.Select(t => t.Type.ToTableName())));
+            
             var select = string.Format("SELECT {0}", string.Join(", ", query.Projections.Select(e => e.ToSqlStatement()).DefaultIfEmpty("*")));
-            var from = string.Format("FROM {0}", string.Join(", ", query.Types.Select(t => t.Type.ToTableName())));
+            
             var where = query.Filters.Count > 0 ? string.Format("WHERE {0}",
                 string.Join(" AND ", query.Filters.Select(e => string.Format("({0})", e.ToSqlStatement())))) : string.Empty;
             var orderBy = query.Order.Count > 0
                 ? string.Format("ORDER BY {0}",
                 string.Join(", ", query.Order.Select(e => string.Format("{0}", e.ToSqlStatement())))) : string.Empty;
-            return string.Format("{0} {1} {2} {3}", select, from, where, orderBy).Trim();
+            var sqlQuery = string.Format("{0} {1} {2} {3}", select, from, where, orderBy).Trim();
+            if (query.Partitions.Count > 0)
+            {
+                for (var i = 0; i < query.Partitions.Count; i++)
+                {
+                    sqlQuery = string.Format("SELECT * FROM ({0}) AS T{1}", sqlQuery, i);
+                }
+            }
+
+            return sqlQuery;
         }
 
         private static string ToSqlStatement(this IQueryExpression expression)
@@ -200,13 +213,15 @@ namespace Moth.Database.MsSql
                 var orderExpression = memberExpression as OrderExpression;
                 if (orderExpression != null)
                 {
-                    return string.Format("[{0}.{1}].[{2}] {3}", string.Join(".", orderExpression.Namespace), orderExpression.ObjectName, orderExpression.MemberName, orderExpression.Direction == OrderDirection.Ascending ? "ASC" : "DESC");    
+                    return string.Format("[{0}.{1}].[{2}] {3}", string.Join(".", orderExpression.Namespace), orderExpression.ObjectName, orderExpression.MemberName, orderExpression.Direction == SortDirection.Ascending ? "ASC" : "DESC");    
                 }
                 return string.Format("[{0}.{1}].[{2}]", string.Join(".", memberExpression.Namespace), memberExpression.ObjectName, memberExpression.MemberName);
             }
-            if (expression is SubQueryExpression)
+
+            var methodExpression = expression as MethodExpression;
+            if (methodExpression != null)
             {
-                throw new NotImplementedException();
+                return methodExpression.MethodToSqlStatement();
             }
 
             throw new ArgumentOutOfRangeException("expression", string.Format("Expression Type: {0}", expression.GetType()));
@@ -218,6 +233,46 @@ namespace Moth.Database.MsSql
             var format = binaryExpression.Operator.ToSqlBinaryFormat();
             var right = binaryExpression.Right.ToSqlStatement();
             return string.Format(format, left, right);
+        }
+
+        private static string MethodToSqlStatement(this MethodExpression source)
+        {
+            return string.Empty;
+            switch (source.Type)
+            {
+                case MethodType.Average:
+                    break;
+                case MethodType.Count:
+                    break;
+                case MethodType.First:
+                    break;
+                case MethodType.FirstOrDefault:
+                    break;
+                case MethodType.Last:
+                    break;
+                case MethodType.LastOrDefault:
+                    break;
+                case MethodType.Max:
+                    break;
+                case MethodType.Min:
+                    break;
+                case MethodType.Single:
+                    break;
+                case MethodType.SingleOrDefault:
+                    break;
+                case MethodType.Skip:
+                    break;
+                case MethodType.SkipWhile:
+                    break;
+                case MethodType.Sum:
+                    break;
+                case MethodType.Take:
+                    break;
+                case MethodType.TakeWhile:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public static string ToTableName(this Type type)

@@ -83,7 +83,7 @@ namespace Moth.Linq
             "ThenBy",
             "ThenByDescending"
         };
-        
+
         private ExpressionQuery query;
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
@@ -99,7 +99,8 @@ namespace Moth.Linq
                 if (ProjectionMethodNames.Contains(method.Name) && node.Arguments.Count > 1)
                 {
                     var oldQuery = query;
-                    query = new ExpressionQuery {SubQuery = oldQuery};
+                    query = new ExpressionQuery { SubQuery = oldQuery };
+                    query.AddProjection(Translator.TranslateExpression(Visit(node.Arguments[1])));
                 }
 
                 if (AggregateMethodNames.Contains(method.Name))
@@ -115,7 +116,7 @@ namespace Moth.Linq
                     }
                     else
                     {
-                        query.AddAggregation(Translator.TranslateExpression(Visit(expressionToVisit)));    
+                        query.AddAggregation(Translator.TranslateExpression(Visit(expressionToVisit)));
                     }
                 }
 
@@ -132,6 +133,16 @@ namespace Moth.Linq
                     }
                 }
 
+                if (OrderMethodNames.Contains(method.Name))
+                {
+                    var sortDirection = SortDirection.Ascending;
+                    if (method.Name.Contains("Descending"))
+                    {
+                        sortDirection = SortDirection.Descending;
+                    }
+                    var orderExpression = OrderExpression.FromMemberExpression((Expressions.MemberExpression)Translator.TranslateExpression(Visit(node.Arguments[1])), sortDirection);
+                    query.AddOrder(orderExpression);
+                }
             }
 
             return node.Arguments.Count > 1 ? Visit(node.Arguments[0]) : base.VisitMethodCall(node);
@@ -207,7 +218,7 @@ namespace Moth.Linq
                     query.AddType(node.Value.GetType().GenericTypeArguments[0]);
                 }
             }
-            
+
             return base.VisitConstant(node);
         }
 

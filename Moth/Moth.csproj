@@ -55,10 +55,9 @@
     <Compile Include="Expressions\MemberExpression.cs" />
     <Compile Include="Expressions\MethodExpression.cs" />
     <Compile Include="Expressions\MethodType.cs" />
-    <Compile Include="Expressions\OrderDirection.cs" />
+    <Compile Include="Expressions\SortDirection.cs" />
     <Compile Include="Expressions\OrderExpression.cs" />
     <Compile Include="Expressions\ParameterExpression.cs" />
-    <Compile Include="Expressions\SubQueryExpression.cs" />
     <Compile Include="Expressions\TypeExpression.cs" />
     <Compile Include="Extensions\ExecutorExtension.cs" />
     <Compile Include="Extensions\QueryExtension.cs" />
