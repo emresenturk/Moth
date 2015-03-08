@@ -14,7 +14,7 @@ namespace Moth.Expressions
             Aggregates = new List<IQueryExpression>();
             Partitions = new List<IQueryExpression>();
             Types = new List<TypeExpression>();
-            Order = new List<IQueryExpression>();
+            Sorts = new List<IQueryExpression>();
             QueryIndex = 0;
         }
 
@@ -22,7 +22,7 @@ namespace Moth.Expressions
         public IList<IQueryExpression> Projections { get; set; }
         public IList<IQueryExpression> Aggregates { get; set; }
         public IList<IQueryExpression> Partitions { get; set; }
-        public IList<IQueryExpression> Order { get; set; }
+        public IList<IQueryExpression> Sorts { get; set; }
         public IQuery SubQuery { get; set; }
         public List<TypeExpression> Types { get; set; }
         public IList<Parameter> Parameters { get; set; }
@@ -33,7 +33,10 @@ namespace Moth.Expressions
 
         public void AddProjection(IQueryExpression expression)
         {
-            AddExpression(Projections, expression);
+            if (!(expression is TypeExpression))
+            {
+                AddExpression(Projections, expression);
+            }
         }
 
         public void AddAggregation(IQueryExpression expression)
@@ -52,10 +55,18 @@ namespace Moth.Expressions
             Types.Add(new TypeExpression(type));
         }
 
-
-        public void AddOrder(IQueryExpression expression)
+        public void AddType(TypeExpression expression)
         {
-            AddExpression(Order, expression);
+            if (Types.TrueForAll(t => t.Type != expression.Type))
+            {
+                Types.Add(expression);
+            }
+        }
+
+
+        public void AddSort(IQueryExpression expression)
+        {
+            AddExpression(Sorts, expression);
         }
 
         private void AddParameters(IQueryExpression expression)
@@ -77,7 +88,7 @@ namespace Moth.Expressions
         {
             foreach (var queryExpression in expressions)
             {
-                expressionList.Add(queryExpression);
+                expressionList.Insert(0,queryExpression);
                 AddParameters(queryExpression);
             }
         }

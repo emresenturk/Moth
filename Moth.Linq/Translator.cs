@@ -44,17 +44,15 @@ namespace Moth.Linq
 
             if (exp.NodeType == SystemExpressions.ExpressionType.Parameter)
             {
-                Trace.WriteLine(exp);
-                throw new NotSupportedException("wtf?");
-                //return TranslateParameterExpression(expression as SystemExpressions.ParameterExpression);
+                return new TypeExpression(exp.Type);
             }
 
-            if (expression is SystemExpressions.UnaryExpression)
+            if (exp is SystemExpressions.UnaryExpression)
             {
-                throw new NotSupportedException((expression as SystemExpressions.UnaryExpression).Method.Name);
+                throw new NotSupportedException((exp as SystemExpressions.UnaryExpression).Method.Name);
             }
 
-            if (expression is SystemExpressions.MethodCallExpression)
+            if (exp is SystemExpressions.MethodCallExpression)
             {
                 throw new NotSupportedException((expression as SystemExpressions.MethodCallExpression).Method.Name);
             }

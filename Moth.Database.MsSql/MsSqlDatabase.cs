@@ -134,7 +134,6 @@ namespace Moth.Database.MsSql
 
         private static IEnumerable<Entity> Read(SqlCommand command)
         {
-            Trace.WriteLine(command.CommandText);
             var reader = command.ExecuteReader();
             while (reader.Read())
             {
@@ -160,33 +159,69 @@ namespace Moth.Database.MsSql
 
     static class ExpressionQueryExtension
     {
-        public static string ToInsertQuery(this ExpressionQuery query)
-        {
-            throw new NotImplementedException();
-        }
-
         public static string ToSelectQuery(this ExpressionQuery query)
         {
-            var @from = query.SubQuery != null 
-                ? string.Format("FROM ({0}) AS F{1}", ((ExpressionQuery)query.SubQuery).ToSelectQuery(), query.QueryIndex) 
+            var from = query.SubQuery != null
+                ? string.Format("FROM ({0}) AS F{1}", ((ExpressionQuery) query.SubQuery).ToSelectQuery(),
+                    query.QueryIndex)
                 : string.Format("FROM {0}", string.Join(", ", query.Types.Select(t => t.Type.ToTableName())));
-            
-            var select = string.Format("SELECT {0}", string.Join(", ", query.Projections.Select(e => e.ToSqlStatement()).DefaultIfEmpty("*")));
-            
-            var where = query.Filters.Count > 0 ? string.Format("WHERE {0}",
-                string.Join(" AND ", query.Filters.Select(e => string.Format("({0})", e.ToSqlStatement())))) : string.Empty;
-            var orderBy = query.Order.Count > 0
-                ? string.Format("ORDER BY {0}",
-                string.Join(", ", query.Order.Select(e => string.Format("{0}", e.ToSqlStatement())))) : string.Empty;
+            var where = query.Filters.Any()
+                ? string.Format("WHERE {0}",
+                    string.Join(" AND ", query.Filters.Select(e => string.Format("({0})", e.ToSqlStatement()))))
+                : string.Empty;
+            var orderBy = query.Sorts.Any()
+                ? string.Format("ORDER BY {0}", string.Join(",", query.Sorts.Select(s => s.ToSqlStatement())))
+                : null;
+
+            var select = query.Projections.Any() 
+                ? string.Format("SELECT ROW_NUMBER() OVER({2}) AS RowId{1}, {0}", string.Join(",", query.Projections.Select(p => p.ToSqlStatement())), query.QueryIndex, orderBy ?? "ORDER BY Id")
+                : string.Format("SELECT ROW_NUMBER() OVER ({1}) AS RowId{0}, *", query.QueryIndex, orderBy ?? "ORDER BY Id");
+
             var sqlQuery = string.Format("{0} {1} {2} {3}", select, from, where, orderBy).Trim();
-            if (query.Partitions.Count > 0)
+            if (query.Partitions.Any())
             {
-                for (var i = 0; i < query.Partitions.Count; i++)
+                sqlQuery = string.Format("* FROM ({0}) AS P{1}", sqlQuery, query.QueryIndex);
+                foreach (var partitionExpression in query.Partitions)
                 {
-                    sqlQuery = string.Format("SELECT * FROM ({0}) AS T{1}", sqlQuery, i);
+                    var partitionMethod = partitionExpression as MethodExpression;
+                    if (partitionMethod != null)
+                    {
+                        if (partitionMethod.Type == MethodType.First ||
+                            partitionMethod.Type == MethodType.FirstOrDefault)
+                        {
+                            sqlQuery = string.Format("SELECT TOP 1 {0}", sqlQuery);
+                        }
+                        else if (partitionMethod.Type == MethodType.Last ||
+                                 partitionMethod.Type == MethodType.LastOrDefault)
+                        {
+                            sqlQuery = string.Format("SELECT TOP 1 {0} ORDER BY RowId{1} DESC", sqlQuery,
+                                query.QueryIndex);
+                        }
+
+                        else if (partitionMethod.Type == MethodType.Single ||
+                                 partitionMethod.Type == MethodType.SingleOrDefault)
+                        {
+                            sqlQuery = string.Format("SELECT {0}", sqlQuery);
+                        }
+
+                        else if (partitionMethod.Type == MethodType.Take)
+                        {
+                            sqlQuery = string.Format("SELECT TOP {0} {1}", partitionMethod.Parameter.ToSqlStatement(),
+                                sqlQuery);
+                        }
+                        else if (partitionMethod.Type == MethodType.Skip)
+                        {
+                            sqlQuery = string.Format("{0} WHERE RowId{1} > {2}", sqlQuery, query.QueryIndex,
+                                partitionMethod.Parameter.ToSqlStatement());
+                        }
+                    }
                 }
             }
-
+            Trace.WriteLine("Query:");
+            Trace.WriteLine(sqlQuery);
+            Trace.WriteLine("");
+            Trace.WriteLine("");
+            Trace.WriteLine("");
             return sqlQuery;
         }
 
@@ -217,7 +252,6 @@ namespace Moth.Database.MsSql
                 }
                 return string.Format("[{0}.{1}].[{2}]", string.Join(".", memberExpression.Namespace), memberExpression.ObjectName, memberExpression.MemberName);
             }
-
             var methodExpression = expression as MethodExpression;
             if (methodExpression != null)
             {

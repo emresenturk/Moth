@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -98,9 +99,18 @@ namespace Moth.Linq
 
                 if (ProjectionMethodNames.Contains(method.Name) && node.Arguments.Count > 1)
                 {
-                    var oldQuery = query;
-                    query = new ExpressionQuery { SubQuery = oldQuery };
-                    query.AddProjection(Translator.TranslateExpression(Visit(node.Arguments[1])));
+                    var projectionExpression = Translator.TranslateExpression(Visit(node.Arguments[1]));
+                    if (method.Name == "Select" && projectionExpression is TypeExpression)
+                    {
+                        query.AddType(projectionExpression as TypeExpression);
+                    }
+                    else
+                    {
+                        var oldQuery = query;
+                        query = new ExpressionQuery();
+                        query.SetSubQuery(oldQuery);
+                        query.AddProjection(projectionExpression);   
+                    }
                 }
 
                 if (AggregateMethodNames.Contains(method.Name))
@@ -125,7 +135,7 @@ namespace Moth.Linq
                     MethodType methodType;
                     if (Enum.TryParse(method.Name, out methodType))
                     {
-                        query.AddPartition(new MethodExpression(methodType, Translator.TranslateExpression(Visit(node.Arguments[1]))));
+                        query.AddPartition(new MethodExpression(methodType, Translator.TranslateExpression(Visit(node.Arguments.LastOrDefault()))));
                     }
                     else
                     {
@@ -141,7 +151,7 @@ namespace Moth.Linq
                         sortDirection = SortDirection.Descending;
                     }
                     var orderExpression = OrderExpression.FromMemberExpression((Expressions.MemberExpression)Translator.TranslateExpression(Visit(node.Arguments[1])), sortDirection);
-                    query.AddOrder(orderExpression);
+                    query.AddSort(orderExpression);
                 }
             }
 
@@ -229,6 +239,12 @@ namespace Moth.Linq
             return base.VisitLambda(Expression.Lambda<T>(body ?? node.Body, parameters));
         }
 
+        protected override Expression VisitParameter(System.Linq.Expressions.ParameterExpression node)
+        {
+            query.AddType((TypeExpression)Translator.TranslateExpression(node));
+            return base.VisitParameter(node);
+        }
+
         protected override Expression VisitUnary(UnaryExpression node)
         {
             var operand = Visit(node.Operand);
@@ -237,9 +253,10 @@ namespace Moth.Linq
                 operand = base.Visit(((UnaryExpression)operand).Operand);
             }
 
-            if (operand != node.Operand)
+            var lambdaOperand = operand as LambdaExpression;
+            if (lambdaOperand != null && lambdaOperand.Parameters.Count == 1 && lambdaOperand.Body == lambdaOperand.Parameters[0])
             {
-                return node.Update(operand);
+                return VisitParameter(lambdaOperand.Parameters[0]);
             }
 
             return base.VisitUnary(node);
