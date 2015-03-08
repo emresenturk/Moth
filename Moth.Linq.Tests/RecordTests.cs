@@ -58,7 +58,7 @@ namespace Moth.Linq.Tests
         [TestFixtureTearDown]
         public void TearDown()
         {
-            //Query.Create(@"EXEC sp_MSforeachtable @command1 = ""DROP TABLE ?""").Execute().NonQuery();
+            Query.Create(@"EXEC sp_MSforeachtable @command1 = ""DROP TABLE ?""").Execute().NonQuery();
             DatabaseContainer.DefaultContainer.Dispose();
         }
 

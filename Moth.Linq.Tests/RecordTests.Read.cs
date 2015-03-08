@@ -53,7 +53,7 @@ namespace Moth.Linq.Tests
             var sortedForSinglePropertyCorrectly = true;
             for (var i = 0; i < employeesSortedByFirstName.Count; i++)
             {
-                sortedForSinglePropertyCorrectly = sortedForSinglePropertyCorrectly && employeesSortedByFirstName[i].UId == controlList[i].UId;
+                sortedForSinglePropertyCorrectly = sortedForSinglePropertyCorrectly && employeesSortedByFirstName[i].FirstName == controlList[i].FirstName;
             }
 
             TabulateEmployees(employeesSortedByFirstName, controlList);
@@ -67,7 +67,11 @@ namespace Moth.Linq.Tests
             var sortedForMultiplePropertyCorrectly = true;
             for (var i = 0; i < employeesSortedByFirstNameAndLastName.Count; i++)
             {
-                sortedForMultiplePropertyCorrectly = sortedForMultiplePropertyCorrectly && employeesSortedByFirstNameAndLastName[i].UId == controlListForMultipleSort[i].UId;
+                sortedForMultiplePropertyCorrectly = sortedForMultiplePropertyCorrectly &&
+                                                     employeesSortedByFirstNameAndLastName[i].FirstName ==
+                                                     controlListForMultipleSort[i].FirstName &&
+                                                     employeesSortedByFirstNameAndLastName[i].LastName ==
+                                                     controlListForMultipleSort[i].LastName;
             }
 
             TabulateEmployees(employeesSortedByFirstNameAndLastName, controlListForMultipleSort);
