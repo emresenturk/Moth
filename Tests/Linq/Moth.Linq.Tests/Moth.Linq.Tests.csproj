@@ -69,15 +69,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Moth.Database.MsSql\Moth.Database.MsSql.csproj">
+    <ProjectReference Include="..\..\..\Moth.Database\Moth.Database.MsSql\Moth.Database.MsSql.csproj">
       <Project>{37000D9D-00BF-4721-B156-1A7E741FB562}</Project>
       <Name>Moth.Database.MsSql</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Moth.Linq\Moth.Linq.csproj">
+    <ProjectReference Include="..\..\..\Moth.Linq\Moth.Linq.csproj">
       <Project>{361918cf-f6ef-48c8-b5e7-c8a34e888bf7}</Project>
       <Name>Moth.Linq</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Moth\Moth.csproj">
+    <ProjectReference Include="..\..\..\Moth\Moth.csproj">
       <Project>{4BB12DD8-F5EE-4C2D-A750-564C0FF5394A}</Project>
       <Name>Moth</Name>
     </ProjectReference>

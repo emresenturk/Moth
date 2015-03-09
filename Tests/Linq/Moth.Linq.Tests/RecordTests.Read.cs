@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using Moth.Extensions;
 using Moth.Linq.Tests.TestClasses;
 using NUnit.Framework;
 
@@ -31,6 +32,8 @@ namespace Moth.Linq.Tests
         [Test]
         public void RetrieveMultiple()
         {
+            // flush
+            Query.Create("DELETE FROM [Moth.Linq.Tests.TestClasses.Employee]").Execute().NonQuery();
             var employeeList = new List<Employee>();
             for (var i = 0; i < 20; i++)
             {
