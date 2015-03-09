@@ -30,6 +30,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "References", "References", 
 	ProjectSection(SolutionItems) = preProject
 		References\Handy.Statistics.dll = References\Handy.Statistics.dll
 		References\Handy.Statistics.pdb = References\Handy.Statistics.pdb
+		References\nunit.framework.dll = References\nunit.framework.dll
+		References\nunit.framework.xml = References\nunit.framework.xml
 	EndProjectSection
 EndProject
 Global
