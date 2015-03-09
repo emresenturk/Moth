@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Moth.Configuration;
-using Moth.Expressions;
 using NUnit.Framework;
 using Handy.Statistics;
 namespace Moth.Database.MsSql.Tests

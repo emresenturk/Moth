@@ -26,6 +26,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moth.Database.MsSql.Tests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moth.Linq.Tests", "Tests\Linq\Moth.Linq.Tests\Moth.Linq.Tests.csproj", "{0EA513E9-1AC7-4ED4-A2C7-8D473B41CFAF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "References", "References", "{C659F1CD-E0C8-4BAA-B042-0D28A5DCA4A9}"
+	ProjectSection(SolutionItems) = preProject
+		References\Handy.Statistics.dll = References\Handy.Statistics.dll
+		References\Handy.Statistics.pdb = References\Handy.Statistics.pdb
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
