@@ -86,6 +86,7 @@ namespace Moth.Linq
         };
 
         private ExpressionQuery query;
+        private ExpressionQuery queryToReturn;
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
@@ -106,9 +107,9 @@ namespace Moth.Linq
                     }
                     else
                     {
-                        var oldQuery = query;
+                        var lastSubQuery = LastQuery(queryToReturn);
                         query = new ExpressionQuery();
-                        query.SetSubQuery(oldQuery);
+                        lastSubQuery.SubQuery = query;
                         query.AddProjection(projectionExpression);   
                     }
                 }
@@ -161,8 +162,9 @@ namespace Moth.Linq
         public ExpressionQuery VisitAndTranslate(Expression expression)
         {
             query = new ExpressionQuery();
+            queryToReturn = query;
             Visit(expression);
-            return query;
+            return queryToReturn;
         }
 
         public override Expression Visit(Expression node)
@@ -260,6 +262,17 @@ namespace Moth.Linq
             }
 
             return base.VisitUnary(node);
+        }
+
+        private static ExpressionQuery LastQuery(ExpressionQuery firstQuery)
+        {
+            var query = firstQuery;
+            while (null != query.SubQuery as ExpressionQuery)
+            {
+                query = query.SubQuery as ExpressionQuery;
+            }
+
+            return query;
         }
     }
 }
