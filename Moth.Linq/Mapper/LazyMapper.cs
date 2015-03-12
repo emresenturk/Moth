@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using Moth.Data;
+using Moth.Linq.Attributes;
 
 namespace Moth.Linq.Mapper
 {
@@ -49,18 +49,29 @@ namespace Moth.Linq.Mapper
                 var instance = Activator.CreateInstance(type);
                 foreach (var property in properties)
                 {
-                    if (property.PropertyType.IsGenericType &&
-                    property.PropertyType.GetGenericTypeDefinition() == typeof(One<>))
+                    if (property.PropertyType.IsGenericType)
                     {
-                        var oneInstance = Activator.CreateInstance(property.PropertyType);
-                        TypeDescriptor.GetProperties(oneInstance)["UId"].SetValue(oneInstance, entity[property.Name]);
-                        property.SetValue(instance, oneInstance);
+                        var propertyGenericTypeDefinition = property.PropertyType.GetGenericTypeDefinition();
+                        if (propertyGenericTypeDefinition == typeof(One<>))
+                        {
+                            var oneInstance = Activator.CreateInstance(property.PropertyType);
+                            TypeDescriptor.GetProperties(oneInstance)["UId"].SetValue(oneInstance, entity[property.Name]);
+                            property.SetValue(instance, oneInstance);
+                        }
+                        else if (propertyGenericTypeDefinition == typeof(Many<>))
+                        {
+                            var propertyAttribute = property.GetCustomAttribute<OneToManyAttribute>();
+                            var relationName = propertyAttribute != null ? propertyAttribute.RelationName : type.Name;
+                            var manyInstance = Activator.CreateInstance(property.PropertyType, relationName, entity["UId"]);
+                            property.SetValue(instance, manyInstance);
+                        }
                     }
                     else
                     {
                         property.SetValue(instance, entity[property.Name]);
                     }
                 }
+
                 return instance;
             };
         }
@@ -70,13 +81,32 @@ namespace Moth.Linq.Mapper
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.SetProperty | BindingFlags.Instance);
             return obj =>
             {
-                var entityProperties = new Dictionary<string, object>();
+                var entityProperties = new Property[properties.Length];
+                var index = 0;
                 foreach (var property in properties)
                 {
-                    var isOne = property.PropertyType.IsGenericType &&
-                            property.PropertyType.GetGenericTypeDefinition() == typeof(One<>);
-                    var propVal = isOne ? property.PropertyType.GetProperty("UId").GetValue(property.GetValue(obj)) : property.GetValue(obj);
-                    entityProperties[property.Name] = new Property(property.Name, propVal);   
+                    var isOne = false;
+                    if (property.PropertyType.IsGenericType)
+                    {
+                        var propertyGenericTypeDefinition = property.PropertyType.GetGenericTypeDefinition();
+                        if (propertyGenericTypeDefinition == typeof(One<>))
+                        {
+                            isOne = true;
+                        }
+                        else if (propertyGenericTypeDefinition == typeof(Many<>))
+                        {
+                            continue;
+                        }
+                    }
+
+                    var propVal = property.GetValue(obj);
+                    if (isOne && propVal != null)
+                    {
+                        propVal = property.PropertyType.GetProperty("UId").GetValue(propVal);
+                    }
+                    entityProperties[index] = new Property(property.Name, propVal);
+
+                    index++;
                 }
 
                 return new Entity(entityProperties);
@@ -84,5 +114,3 @@ namespace Moth.Linq.Mapper
         }
     }
 }
-
-// TODO: copy changes made in ReflectionMapper.cs to here
