@@ -57,7 +57,7 @@ namespace Moth.Linq
                 throw new NotSupportedException((expression as SystemExpressions.MethodCallExpression).Method.Name);
             }
 
-            throw new NotImplementedException(string.Format("Expression Type: {0}, Expression: {1}", expression.NodeType, expression));
+            throw new NotImplementedException(string.Format("Expression Type: {0}, Expression: {1}", exp.NodeType, exp));
         }
 
         private static MemberExpression TranslateMemberAccessExpression(SystemExpressions.MemberExpression memberExpression)

@@ -174,7 +174,7 @@ namespace Moth.Linq
 
         protected override Expression VisitMember(MemberExpression node)
         {
-            var expression = Visit(node.Expression ?? Expression.Constant(null));
+            var expression = node.Expression;
             var constantExpression = expression as ConstantExpression;
             if (constantExpression == null)
             {
@@ -243,7 +243,7 @@ namespace Moth.Linq
 
         protected override Expression VisitParameter(System.Linq.Expressions.ParameterExpression node)
         {
-            query.AddType((TypeExpression)Translator.TranslateExpression(node));
+            query.AddType(node.Type);
             return base.VisitParameter(node);
         }
 

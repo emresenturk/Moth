@@ -16,8 +16,6 @@ namespace Moth.Linq
             this.records = records;
         }
 
-        internal event EventHandler<ProviderEventArgs> OnBeforeExecute;
-
         public IQueryable CreateQuery(Expression expression)
         {
             return CreateQuery<TRecord>(expression);
@@ -25,6 +23,12 @@ namespace Moth.Linq
 
         public IQueryable<T> CreateQuery<T>(Expression expression)
         {
+            if (typeof (T) != typeof (TRecord))
+            {
+                var newRecords = new Records<T> {Expression = expression};
+                return newRecords;
+            }
+
             records.Expression = expression;
             return (IQueryable<T>) records;
         }
@@ -36,10 +40,6 @@ namespace Moth.Linq
 
         public IEnumerable<TRecord> ExecuteEnumerator(Expression expression)
         {
-            if (OnBeforeExecute != null)
-            {
-                OnBeforeExecute(this, new ProviderEventArgs{Expression = expression});
-            }
             var query = visitor.VisitAndTranslate(expression);
             query.AddType(typeof(TRecord));
             using (var executor = new ExpressionExecutor())
@@ -53,12 +53,6 @@ namespace Moth.Linq
 
         public TResult Execute<TResult>(Expression expression)
         {
-            var eventArgs = new ProviderEventArgs { Expression = expression };
-            if (OnBeforeExecute != null)
-            {
-                OnBeforeExecute(this, eventArgs);
-            }
-
             var query = visitor.VisitAndTranslate(expression);
             query.AddType(typeof(TRecord));
             using (var executor = new ExpressionExecutor())

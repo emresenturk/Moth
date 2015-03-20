@@ -61,7 +61,7 @@ namespace Moth.Linq.Mapper
                         else if (propertyGenericTypeDefinition == typeof(Many<>))
                         {
                             var propertyAttribute = property.GetCustomAttribute<OneToManyAttribute>();
-                            var relationName = propertyAttribute != null ? propertyAttribute.RelationName : type.Name;
+                            var relationName = propertyAttribute != null ? propertyAttribute.Relation : type.Name;
                             var manyInstance = Activator.CreateInstance(property.PropertyType, relationName, entity["UId"]);
                             property.SetValue(instance, manyInstance);
                         }

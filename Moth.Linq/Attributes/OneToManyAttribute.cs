@@ -4,10 +4,10 @@ namespace Moth.Linq.Attributes
 {
     public class OneToManyAttribute : Attribute
     {
-        public string RelationName { get; set; }
-        public OneToManyAttribute(string relationName)
+        public string Relation { get; set; }
+        public OneToManyAttribute(string relation)
         {
-            RelationName = relationName;
+            Relation = relation;
         }
     }
 }
