@@ -45,6 +45,7 @@
     <Compile Include="Database\IDatabaseContainer.cs" />
     <Compile Include="Data\Entity.cs" />
     <Compile Include="Data\Property.cs" />
+    <Compile Include="Expressions\AssignmentExpression.cs" />
     <Compile Include="Expressions\BinaryExpression.cs" />
     <Compile Include="Expressions\BinaryOperator.cs" />
     <Compile Include="Expressions\ConstantExpression.cs" />
