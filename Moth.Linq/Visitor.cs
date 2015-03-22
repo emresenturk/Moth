@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -12,6 +13,8 @@ namespace Moth.Linq
 {
     internal class Visitor : ExpressionVisitor
     {
+        private static readonly ConcurrentDictionary<string, ExpressionQuery> Queries = new ConcurrentDictionary<string, ExpressionQuery>();  
+
         private static readonly string[] QueryMethodNames =
         {
             "Where", 
@@ -88,6 +91,22 @@ namespace Moth.Linq
         private ExpressionQuery query;
         private ExpressionQuery queryToReturn;
 
+        public ExpressionQuery VisitAndTranslate(Expression expression)
+        {
+            //Trace.WriteLine(expression);
+            //Trace.WriteLine("QueryCount:" + Queries.Count);
+            //return Queries.GetOrAdd(expression.ToString(), CreateQuery(expression));
+            return CreateQuery(expression);
+        }
+
+        private ExpressionQuery CreateQuery(Expression expression)
+        {
+            query = new ExpressionQuery();
+            queryToReturn = query;
+            Visit(expression);
+            return queryToReturn;
+        }
+
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
             var method = node.Method;
@@ -110,7 +129,7 @@ namespace Moth.Linq
                         var lastSubQuery = LastQuery(queryToReturn);
                         query = new ExpressionQuery();
                         lastSubQuery.SubQuery = query;
-                        query.AddProjection(projectionExpression);   
+                        query.AddProjection(projectionExpression);
                     }
                 }
 
@@ -157,14 +176,6 @@ namespace Moth.Linq
             }
 
             return node.Arguments.Count > 1 ? Visit(node.Arguments[0]) : base.VisitMethodCall(node);
-        }
-
-        public ExpressionQuery VisitAndTranslate(Expression expression)
-        {
-            query = new ExpressionQuery();
-            queryToReturn = query;
-            Visit(expression);
-            return queryToReturn;
         }
 
         public override Expression Visit(Expression node)

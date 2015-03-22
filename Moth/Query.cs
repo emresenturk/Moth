@@ -24,7 +24,7 @@ namespace Moth
             this.parameters = new QueryParameterCollection(parameters);
         }
 
-        public static Query Create(string command, params Parameter[] parameters)
+        public static Query As(string command, params Parameter[] parameters)
         {
             return new Query(command, parameters);
         }
